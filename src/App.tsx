@@ -1,8 +1,31 @@
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { useAuth } from './contexts/AuthContext'
+import Login from './pages/Login'
+import Register from './pages/Register'
+
 function App() {
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500 text-lg">Cargando...</p>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-blue-600">E-Commerce App</h1>
-    </div>
+    <Routes>
+      <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+      <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
+      <Route path="/" element={
+        user
+          ? <div className="p-8">
+              <h1 className="text-2xl font-bold">Bienvenido, {user.displayName} 👋</h1>
+            </div>
+          : <Navigate to="/login" />
+      } />
+    </Routes>
   )
 }
 
