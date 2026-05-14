@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './contexts/AuthContext'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Home from './pages/Home'
 
 function App() {
   const { user, loading } = useAuth()
@@ -25,6 +26,7 @@ function App() {
             </div>
           : <Navigate to="/login" />
       } />
+      <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} />
     </Routes>
   )
 }
