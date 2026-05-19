@@ -4,7 +4,9 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
 import Cart from './pages/Cart'
+import Checkout from './pages/Checkout'
 import Navbar from './components/Navbar'
+
 
 function App() {
   const { user, loading } = useAuth()
@@ -26,6 +28,8 @@ function App() {
         <Route path="/" element={<Navigate to="/home" />} />
         <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} />
         <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
+        <Route path="/checkout" element={user ? <Checkout /> : <Navigate to="/login" />} />
+        
       </Routes>
     </>
   )
