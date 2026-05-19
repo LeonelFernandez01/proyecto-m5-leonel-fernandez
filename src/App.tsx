@@ -3,6 +3,8 @@ import { useAuth } from './contexts/AuthContext'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
+import Cart from './pages/Cart'
+import Navbar from './components/Navbar'
 
 function App() {
   const { user, loading } = useAuth()
@@ -16,18 +18,16 @@ function App() {
   }
 
   return (
-    <Routes>
-      <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-      <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
-      <Route path="/" element={
-        user
-          ? <div className="p-8">
-              <h1 className="text-2xl font-bold">Bienvenido, {user.displayName} 👋</h1>
-            </div>
-          : <Navigate to="/login" />
-      } />
-      <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} />
-    </Routes>
+    <>
+      {user && <Navbar />}
+      <Routes>
+        <Route path="/login" element={!user ? <Login /> : <Navigate to="/home" />} />
+        <Route path="/register" element={!user ? <Register /> : <Navigate to="/home" />} />
+        <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} />
+        <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
+      </Routes>
+    </>
   )
 }
 
