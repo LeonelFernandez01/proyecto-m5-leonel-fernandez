@@ -2,6 +2,7 @@ import { collection, addDoc, getDocs, query, where, doc, updateDoc, orderBy } fr
 import { db } from './firebase'
 import type { Order, CartItem } from '../types'
 
+
 // Crear una orden
 export async function createOrder(
   userId: string,
