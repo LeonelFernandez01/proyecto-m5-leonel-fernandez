@@ -7,6 +7,7 @@ import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import Navbar from './components/Navbar'
 import Orders from './pages/Orders'
+import { AdminProducts } from './components/AdminProducts'
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
         <Route path="/checkout" element={user ? <Checkout /> : <Navigate to="/login" />} />
         <Route path="/orders" element={user ? <Orders /> : <Navigate to="/login" />} />
+        <Route path="/admin" element={<AdminProducts />} />
       </Routes>
     </>
   )
