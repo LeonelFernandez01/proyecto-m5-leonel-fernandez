@@ -45,6 +45,10 @@ export default function Navbar() {
           </div>
         )}
       </div>
+      <Link to="/orders" className="text-gray-600 hover:text-blue-600">
+  Mis órdenes
+</Link>
     </nav>
   )
+  
 }
