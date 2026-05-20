@@ -1,28 +1,23 @@
 import { useState } from 'react'
-import { uploadImageToS3 } from '../services/s3Service'
+import { uploadImageToS3 } from '../services/s3Service' // 👈 Importamos la función que sube a S3
+import { db } from '../services/firebase' // 👈 Importamos tu base de datos de Firebase
+import { collection, addDoc } from 'firebase/firestore' // 👈 Funciones oficiales de Firebase para guardar
 
 export function AdminProducts() {
-  // Estados para los datos del formulario
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
   const [stock, setStock] = useState('')
-  
-  // Estado para guardar el archivo de la foto seleccionado
   const [imageFile, setImageFile] = useState<File | null>(null)
-  
-  // Estados para controlar lo que pasa en la pantalla (cargas y errores)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
 
-  // Función que se ejecuta cuando el admin le da al botón "Guardar Producto"
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // Validamos que haya elegido una foto obligatoriamente
     if (!imageFile) {
-      setMessage('Por favor, seleccioná una imagen para el producto.')
+      setMessage('Por favor, seleccioná una imagen.')
       return
     }
 
@@ -30,29 +25,28 @@ export function AdminProducts() {
       setLoading(true)
       setMessage('Subiendo imagen a AWS S3... Esperá un cachito.')
 
-      // 1. LLAMAMOS A TU FUNCIÓN DE S3SERVICE
+      // 1. Subimos la foto a Amazon S3 y nos da la URL
       const finalImageUrl = await uploadImageToS3(imageFile)
       
-      setMessage('Imagen subida joya. Guardando producto en la base de datos...')
+      setMessage('Imagen subida joya. Guardando producto en Firebase...')
 
-      // 2. ARMAMOS EL OBJETO FINAL CON LA URL QUE NOS DEVOLVIÓ AMAZON
+      // 2. Armamos el objeto tal cual como lo espera Firestore
       const newProduct = {
         name,
         price: Number(price),
         description,
         category,
         stock: Number(stock),
-        imageUrl: finalImageUrl, // 👈 Acá queda la URL pública de tu S3
+        imageUrl: finalImageUrl, // La URL de Amazon
         createdAt: new Date()
       }
 
-      console.log('¡Producto listo para mandar a Firebase!:', newProduct)
+      // 3. PASO CLAVE: Guardamos en la colección "products" de Firestore
+      await addDoc(collection(db, 'products'), newProduct)
       
-      // TODO: Acá abajo meteremos el "addDoc" de Firebase en el próximo paso
+      setMessage('¡Producto creado con éxito en Firebase con su foto en S3! 🚀')
       
-      setMessage('¡Producto creado con éxito con su foto en S3!')
-      
-      // Limpiamos el formulario para poder cargar otro
+      // Limpiamos los campos del formulario
       setName('')
       setPrice('')
       setDescription('')
@@ -98,7 +92,6 @@ export function AdminProducts() {
           <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} required style={{ width: '100%' }} />
         </div>
 
-        {/* INPUT CLAVE PARA SELECCIONAR EL ARCHIVO MULTIMEDIA */}
         <div style={{ marginBottom: '20px' }}>
           <label style={{ display: 'block', fontWeight: 'bold' }}>Foto del Producto:</label>
           <input 
@@ -106,7 +99,7 @@ export function AdminProducts() {
             accept="image/*" 
             onChange={(e) => {
               if (e.target.files && e.target.files[0]) {
-                setImageFile(e.target.files[0]) // Guardamos el archivo binario en el estado
+                setImageFile(e.target.files[0])
               }
             }} 
             required 
