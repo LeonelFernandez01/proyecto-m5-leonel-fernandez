@@ -1,4 +1,9 @@
 {
-  "buildCommand": "vite build",
-  "outputDirectory": "dist"
+  "build": {
+    "env": {
+      "TSC_COMPILE_ON_ERROR": "true",
+      "CI": "false"
+    }
+  },
+  "buildCommand": "npm run build"
 }

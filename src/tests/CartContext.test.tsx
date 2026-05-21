@@ -1,8 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { cartReducer } from '../contexts/cartReducer'
 import type { Product, CartState } from '../types'
-import type { useCart } from '../hooks/useCart'
-import type { CartContext, CartProvider } from '../contexts/CartContext'
+
 
 const mockProduct: Product = {
   id: 'prod-123',
