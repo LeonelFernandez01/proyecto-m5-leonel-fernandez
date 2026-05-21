@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
-import { useCart } from '../contexts/CartContext'
+import { useAuth } from '../hooks/useAuth' // 👈 Importamos desde su nueva carpeta hooks!
+import { useCart } from '../hooks/useCart'
 import { logout } from '../services/authService'
 
 export default function Navbar() {

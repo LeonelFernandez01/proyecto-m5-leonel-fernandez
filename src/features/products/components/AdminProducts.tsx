@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { uploadImageToS3 } from "../services/s3Service"; // 👈 Importamos la función que sube a S3
-import { db } from "../config/firebase"; // 👈 Importamos tu base de datos de Firebase
+import { uploadImageToS3 } from '../../../services/s3Service';// 👈 Importamos la función que sube a S3
 import { collection, addDoc } from "firebase/firestore"; // 👈 Funciones oficiales de Firebase para guardar
-
+import { db } from '../../../config/firebase';
 export function AdminProducts() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");

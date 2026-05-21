@@ -1,26 +1,26 @@
-import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { registerWithEmail } from '../services/authService'
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { registerWithEmail } from "../../../services/authService";
 
 export default function Register() {
-  const [displayName, setDisplayName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
+  const [displayName, setDisplayName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   async function handleRegister(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
     try {
-      await registerWithEmail(email, password, displayName)
-      navigate('/')
+      await registerWithEmail(email, password, displayName);
+      navigate("/");
     } catch (err) {
-      setError('Error al registrarse. El email puede estar en uso.')
+      setError("Error al registrarse. El email puede estar en uso.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -37,7 +37,9 @@ export default function Register() {
 
         <form onSubmit={handleRegister} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Nombre
+            </label>
             <input
               type="text"
               value={displayName}
@@ -47,7 +49,9 @@ export default function Register() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
             <input
               type="email"
               value={email}
@@ -57,7 +61,9 @@ export default function Register() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Contraseña
+            </label>
             <input
               type="password"
               value={password}
@@ -71,17 +77,17 @@ export default function Register() {
             disabled={loading}
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? 'Cargando...' : 'Registrarse'}
+            {loading ? "Cargando..." : "Registrarse"}
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-600 mt-4">
-          ¿Ya tenés cuenta?{' '}
+          ¿Ya tenés cuenta?{" "}
           <Link to="/login" className="text-blue-600 hover:underline">
             Iniciá sesión
           </Link>
         </p>
       </div>
     </div>
-  )
+  );
 }

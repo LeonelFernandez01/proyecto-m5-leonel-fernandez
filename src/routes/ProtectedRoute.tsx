@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext' // 👈 Consumimos tu contexto global
+import { useAuth } from '../hooks/useAuth' // 👈 Importamos desde su nueva carpeta hooks!
 
 export function ProtectedRoute() {
   const { user, loading } = useAuth() // 👈 Sacamos el usuario y el loading limpios de acá
