@@ -6,6 +6,7 @@ import {
   updateOrderStatus,
 } from "../../../services/orderService";
 import type { Order } from "../../../types";
+import Spinner from "../../../components/Spinner";
 
 const STATUS_LABELS: Record<Order["status"], string> = {
   pending: "⏳ Pendiente",
@@ -67,14 +68,13 @@ export default function Orders() {
     }
   };
 
-  if (loading)
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500 font-medium">
-          Cargando panel de órdenes...
-        </p>
-      </div>
-    );
+  if (loading) {
+  return (
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <Spinner message="Cargando tus pedidos..." />
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useProducts } from "../../../hooks/useProducts";
 import { useCart } from "../../../hooks/useCart";
 import type { Product } from "../../../types";
+import Spinner from "../../../components/Spinner";
 
 const CATEGORIES = ["Todos", "Ropa", "Electrónica", "Accesorios", "Hogar"];
 
@@ -16,17 +17,18 @@ export default function Home() {
   const filteredProducts = products.filter((p) =>
     p.name?.toLowerCase().includes(search.toLowerCase()),
   );
-  if (loading)
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Cargando productos...</p>
-      </div>
-    );
+  if (loading) {
+  return (
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <Spinner message="Trayendo el catálogo..." />
+    </div>
+  );
+}
 
   if (error)
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-red-500">{error}</p>
+        <Spinner message="Error al cargar los productos." />
       </div>
     );
 
@@ -87,6 +89,9 @@ function ProductCard({
   product: Product;
   onAddToCart: (p: Product) => void;
 }) {
+  // Manejo seguro del stock si viene indefinido desde la base de datos
+  const productStock = product.stock ?? 0;
+
   return (
     <div className="bg-white rounded-lg shadow p-4 flex flex-col">
       <img
@@ -96,12 +101,23 @@ function ProductCard({
       />
       <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
       <p className="text-gray-500 text-sm mb-2 flex-1">{product.description}</p>
-      <p className="text-blue-600 font-bold text-xl mb-4">${product.price}</p>
+      
+      {/* 📊 Bloque visual de Stock */}
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-blue-600 font-bold text-xl">${product.price}</p>
+        <span className={`text-xs font-semibold px-2 py-1 rounded ${
+          productStock > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+        }`}>
+          {productStock > 0 ? `Stock: ${productStock} u.` : "Agotado"}
+        </span>
+      </div>
+
       <button
         onClick={() => onAddToCart(product)}
-        className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        disabled={productStock <= 0}
+        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition font-medium"
       >
-        Agregar al carrito
+        {productStock > 0 ? "Agregar al carrito" : "Sin stock"}
       </button>
     </div>
   );
