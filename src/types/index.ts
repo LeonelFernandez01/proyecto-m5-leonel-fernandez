@@ -34,3 +34,14 @@ export interface Order {
   status: 'pending' | 'processing' | 'completed' | 'cancelled'
   createdAt: Date
 }
+
+export interface CartState {
+  items: CartItem[]
+  total: number // 👈 Sumamos el total acá para que el estado sea predecible
+}
+
+export type CartAction =
+  | { type: 'ADD_ITEM'; payload: Product }
+  | { type: 'REMOVE_ITEM'; payload: string }
+  | { type: 'UPDATE_QUANTITY'; payload: { productId: string; quantity: number } }
+  | { type: 'CLEAR_CART' }

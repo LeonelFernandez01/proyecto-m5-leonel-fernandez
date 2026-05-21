@@ -20,17 +20,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        const docRef = doc(db, 'users', firebaseUser.uid)
-        const docSnap = await getDoc(docRef)
-        
-        if (docSnap.exists()) {
-          setUser(docSnap.data() as User)
+      // Activamos el loading apenas detectamos un cambio de estado para evitar parpadeos
+      setLoading(true)
+
+      try {
+        if (firebaseUser) {
+          const docRef = doc(db, 'users', firebaseUser.uid)
+          const docSnap = await getDoc(docRef)
+          
+          if (docSnap.exists()) {
+            // Seteamos el usuario completo con su rol (admin o customer)
+            setUser(docSnap.data() as User)
+          } else {
+            // Si el usuario existe en Auth pero no tiene documento en Firestore (caso raro)
+            setUser(null)
+          }
+        } else {
+          // Si no hay sesión activa de Firebase
+          setUser(null)
         }
-      } else {
+      } catch (error) {
+        console.error("Error al obtener el rol del usuario en Firestore:", error)
         setUser(null)
+      } finally {
+        // REGLA DE ORO: El loading se apaga SÓLO cuando terminó todo el proceso de arriba
+        setLoading(false)
       }
-      setLoading(false)
     })
 
     return () => unsubscribe()
