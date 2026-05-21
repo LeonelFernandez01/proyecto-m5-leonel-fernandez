@@ -1,15 +1,16 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './contexts/AuthContext'
+import { UserGuard } from './routes/UserGuard'
+import { AdminGuard } from './routes/AdminGuard'
+
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
-import Navbar from './components/Navbar'
 import Orders from './pages/Orders'
+import Navbar from './components/Navbar'
 import { AdminProducts } from './components/AdminProducts'
-import { ProtectedRoute } from './components/ProtectedRoute'
-
 
 function App() {
   const { user, loading } = useAuth()
@@ -26,16 +27,28 @@ function App() {
     <>
       {user && <Navbar />}
       <Routes>
+        {/* ================= RUTAS PÚBLICAS (SÓLO SI NO ESTÁ LOGUEADO) ================= */}
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/home" />} />
         <Route path="/register" element={!user ? <Register /> : <Navigate to="/home" />} />
+        
+        {/* Redirección inicial por defecto */}
         <Route path="/" element={<Navigate to="/home" />} />
-        <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
-        <Route path="/checkout" element={user ? <Checkout /> : <Navigate to="/login" />} />
-        <Route path="/orders" element={user ? <Orders /> : <Navigate to="/login" />} />
-        <Route path="/admin" element={<ProtectedRoute />}>
+
+        {/* ================= RUTAS PROTEGIDAS PARA CLIENTES LOGUEADOS ================= */}
+        <Route element={<UserGuard />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders" element={<Orders />} />
+        </Route>
+
+        {/* ================= RUTAS EXCLUSIVAS PARA EL ADMINISTRADOR ================= */}
+        <Route path="/admin" element={<AdminGuard />}>
           <Route index element={<AdminProducts />} />
         </Route>
+
+        {/* Catcher global por si mandan fruta en la URL */}
+        <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
     </>
   )

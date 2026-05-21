@@ -1,0 +1,9 @@
+import { Navigate, Outlet } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
+
+export function UserGuard() {
+  const { user } = useAuth()
+
+  // Si no hay usuario de ningún tipo, al login de cabeza
+  return user ? <Outlet /> : <Navigate to="/login" replace />
+}
