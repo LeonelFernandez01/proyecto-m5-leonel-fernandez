@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth' // 👈 Importamos desde su nueva carpeta hooks!
+import { useAuth } from '../hooks/useAuth'
 import { useCart } from '../hooks/useCart'
 import { logout } from '../services/authService'
 
@@ -33,6 +33,14 @@ export default function Navbar() {
             </span>
           )}
         </Link>
+        <Link to="/orders" className="text-gray-600 hover:text-blue-600">
+          Mis órdenes
+        </Link>
+        {user?.role === 'admin' && (
+          <Link to="/admin" className="text-purple-600 font-medium hover:text-purple-800">
+            ⚙️ Admin
+          </Link>
+        )}
         {user && (
           <div className="flex items-center gap-4">
             <span className="text-gray-600 text-sm">{user.displayName}</span>
@@ -45,10 +53,6 @@ export default function Navbar() {
           </div>
         )}
       </div>
-      <Link to="/orders" className="text-gray-600 hover:text-blue-600">
-  Mis órdenes
-</Link>
     </nav>
   )
-  
 }
