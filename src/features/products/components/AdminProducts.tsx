@@ -4,6 +4,8 @@ import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "firebase
 import { db } from '../../../config/firebase';
 import type { Product } from "../../../types";
 
+const CATEGORIES = ["Ropa", "Electrónica", "Accesorios", "Hogar"];
+
 export function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [name, setName] = useState("");
@@ -114,8 +116,13 @@ export function AdminProducts() {
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Categoría</label>
-            <input type="text" value={category} onChange={e => setCategory(e.target.value)} required
-              className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <select value={category} onChange={e => setCategory(e.target.value)} required
+              className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Seleccioná una categoría</option>
+              {CATEGORIES.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Stock</label>
@@ -126,7 +133,8 @@ export function AdminProducts() {
             <label className="block text-sm font-medium mb-1">
               Foto {editingId && "(opcional — dejá vacío para mantener la actual)"}
             </label>
-            <input type="file" accept="image/*" onChange={e => e.target.files && setImageFile(e.target.files[0])}
+            <input type="file" accept="image/*"
+              onChange={e => e.target.files && setImageFile(e.target.files[0])}
               className="w-full text-gray-300" required={!editingId} />
           </div>
 
