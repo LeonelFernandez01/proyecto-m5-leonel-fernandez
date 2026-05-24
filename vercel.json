@@ -1,9 +1,10 @@
 {
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "build": {
     "env": {
-      "TSC_COMPILE_ON_ERROR": "true",
       "CI": "false"
     }
-  },
-  "buildCommand": "npm run build"
+  }
 }
