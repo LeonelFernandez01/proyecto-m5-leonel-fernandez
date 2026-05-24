@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useProducts } from "../../../hooks/useProducts";
 import { useCart } from "../../../hooks/useCart";
+import { useDebounce } from "../../../hooks/useDebounce";
 import type { Product } from "../../../types";
 import Spinner from "../../../components/Spinner";
 
@@ -11,19 +12,21 @@ export default function Home() {
     undefined,
   );
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 400);
   const { products, loading, error } = useProducts(selectedCategory);
   const { addItem } = useCart();
 
   const filteredProducts = products.filter((p) =>
-    p.name?.toLowerCase().includes(search.toLowerCase()),
+    p.name?.toLowerCase().includes(debouncedSearch.toLowerCase()),
   );
+
   if (loading) {
-  return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <Spinner message="Trayendo el catálogo..." />
-    </div>
-  );
-}
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <Spinner message="Trayendo el catálogo..." />
+      </div>
+    );
+  }
 
   if (error)
     return (
@@ -89,7 +92,6 @@ function ProductCard({
   product: Product;
   onAddToCart: (p: Product) => void;
 }) {
-  // Manejo seguro del stock si viene indefinido desde la base de datos
   const productStock = product.stock ?? 0;
 
   return (
@@ -101,8 +103,7 @@ function ProductCard({
       />
       <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
       <p className="text-gray-500 text-sm mb-2 flex-1">{product.description}</p>
-      
-      {/* 📊 Bloque visual de Stock */}
+
       <div className="flex justify-between items-center mb-4">
         <p className="text-blue-600 font-bold text-xl">${product.price}</p>
         <span className={`text-xs font-semibold px-2 py-1 rounded ${
