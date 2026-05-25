@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { uploadImageToS3 } from '../../../services/s3Service';
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 import { db } from '../../../config/firebase';
 import type { Product } from "../../../types";
 
@@ -19,14 +19,12 @@ export function AdminProducts() {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchProducts();
+    const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
+      const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Product[];
+      setProducts(data);
+    });
+    return () => unsubscribe();
   }, []);
-
-  async function fetchProducts() {
-    const snapshot = await getDocs(collection(db, "products"));
-    const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Product[];
-    setProducts(data);
-  }
 
   function handleEdit(product: Product) {
     setEditingId(product.id);
@@ -36,6 +34,7 @@ export function AdminProducts() {
     setCategory(product.category);
     setStock(String(product.stock));
     setImageFile(null);
+    setMessage("");
   }
 
   function handleCancel() {
@@ -49,7 +48,6 @@ export function AdminProducts() {
     if (!confirm("¿Seguro que querés eliminar este producto?")) return;
     await deleteDoc(doc(db, "products", id));
     setMessage("Producto eliminado.");
-    fetchProducts();
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,7 +80,6 @@ export function AdminProducts() {
 
       setName(""); setPrice(""); setDescription("");
       setCategory(""); setStock(""); setImageFile(null);
-      fetchProducts();
     } catch (error: any) {
       setMessage(`Error: ${error.message}`);
     } finally {
@@ -97,7 +94,6 @@ export function AdminProducts() {
       </h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Formulario */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">Nombre</label>
@@ -154,7 +150,6 @@ export function AdminProducts() {
           {message && <p className="text-blue-400 font-medium">{message}</p>}
         </form>
 
-        {/* Lista de productos */}
         <div>
           <h3 className="text-lg font-bold mb-4">Productos existentes</h3>
           <div className="flex flex-col gap-3 max-h-[600px] overflow-y-auto pr-1">
