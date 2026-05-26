@@ -1,0 +1,1 @@
+import '@testing-library/jest-dom' // Importa cualquier otro setup necesario para tus pruebas aquí o agrega configuraciones globales para tus pruebas.
