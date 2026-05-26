@@ -32,7 +32,7 @@ export interface Order {
   items: CartItem[]
   total: number
   status: 'pending' | 'processing' | 'completed' | 'cancelled'
-  createdAt: Date
+  createdAt: Date | { toDate: () => Date }
 }
 
 export interface CartState {

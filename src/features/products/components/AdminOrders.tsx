@@ -66,10 +66,9 @@ export default function AdminOrders() {
         <div className="flex flex-col gap-4">
           {orders.map((order) => {
             // Manejo seguro por si Firebase devuelve Timestamp
-            const orderDate = order.createdAt && typeof (order.createdAt as any).toDate === "function"
-              ? (order.createdAt as any).toDate()
-              : new Date(order.createdAt);
-
+            const orderDate = order.createdAt && typeof (order.createdAt as { toDate?: () => Date }).toDate === "function"
+             ? (order.createdAt as { toDate: () => Date }).toDate()
+             : new Date(order.createdAt as Date);
             return (
               <div key={order.id} className="bg-white p-6 rounded-lg shadow border flex flex-col md:flex-row justify-between gap-4">
                 <div className="flex-1">

@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../config/firebase";
 import type { Order, CartItem } from "../types";
+import type { DocumentReference } from 'firebase/firestore'
 
 // ============================================================================
 // 1. Crear una orden con descuento de stock automatizado (Transacción Atómica)
@@ -22,7 +23,7 @@ export async function createOrder(
   
   // runTransaction asegura que si no hay stock de algún producto, no se cree la orden ni se reste nada
   return await runTransaction(db, async (transaction) => {
-    const productUpdates: { docRef: any; newStock: number }[] = [];
+    const productUpdates: { docRef: DocumentReference; newStock: number }[] = [];
 
     // Paso A: Chequear el stock de cada producto en el carrito
     for (const item of items) {

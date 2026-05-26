@@ -33,7 +33,7 @@ export async function uploadImageToS3(file: File): Promise<string> {
 
     // Retornamos la URL pública de AWS para guardarla en Firestore
     return imageUrl;
-  } catch (error: any) {
+ } catch (error) {
     console.error('Error en el proceso de subida a S3:', error);
     throw error;
   }

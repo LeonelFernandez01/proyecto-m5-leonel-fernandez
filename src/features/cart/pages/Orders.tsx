@@ -113,8 +113,8 @@ export default function Orders() {
                   )}
                   {/* 🛠️ FIJATE ACÁ: Le metimos la aserción de tipo para domar a TypeScript */}
                   <p className="text-sm text-gray-500">
-                    {(order.createdAt as any)?.toDate
-                      ? (order.createdAt as any).toDate().toLocaleDateString()
+                    {typeof (order.createdAt as { toDate?: () => Date }).toDate === 'function'
+                      ? (order.createdAt as { toDate: () => Date }).toDate().toLocaleDateString()
                       : "Fecha no disponible"}
                   </p>
                 </div>

@@ -80,8 +80,8 @@ export function AdminProducts() {
 
       setName(""); setPrice(""); setDescription("");
       setCategory(""); setStock(""); setImageFile(null);
-    } catch (error: any) {
-      setMessage(`Error: ${error.message}`);
+    } catch (error) {
+     setMessage(`Error: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     } finally {
       setLoading(false);
     }
