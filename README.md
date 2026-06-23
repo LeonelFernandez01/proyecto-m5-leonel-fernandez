@@ -1,7 +1,7 @@
-cat > README.md << 'ENDOFFILE'
-# 🛒 ECommerce App — Proyecto Integrador M5
 
-Aplicación de e-commerce completa construida con React 18 + TypeScript, desplegada en Vercel con autenticación Firebase, base de datos Firestore y almacenamiento de imágenes en AWS S3.
+# 🛒 AuraMarket — Proyecto Integrador Premium M5
+
+Aplicación de e-commerce completa y de diseño premium construida con React 18 + TypeScript, desplegada en Vercel con autenticación Firebase, base de datos Firestore y almacenamiento de imágenes en AWS S3. Rediseñada con una estética oscura moderna, efectos de vidrio esmerilado (*glassmorphism*) y validación de experiencia de usuario en tiempo real.
 
 **🔗 Demo en producción:** https://proyecto-m5-leonel-fernandez.vercel.app
 
@@ -9,7 +9,7 @@ Aplicación de e-commerce completa construida con React 18 + TypeScript, despleg
 
 ## 📋 Descripción del proyecto
 
-E-commerce full stack con flujo completo de compra: catálogo de productos, carrito, checkout y gestión de órdenes. Incluye panel de administración con CRUD de productos e imágenes subidas a AWS S3 mediante presigned URLs generadas por Vercel Serverless Functions.
+E-commerce full stack con flujo completo de compra rediseñado bajo una estética premium moderna y oscura (*dark theme* con *glassmorphism*). Incluye catálogo con buscador y filtros dinámicos por categorías, modal de vista rápida para productos, carrito de compras con control y validación estricta de stock en tiempo real, notificaciones flotantes (*toasts*) centradas e intuitivas para el usuario, checkout simulado con modales inmersivos de éxito/error, y panel de administración CRUD completamente integrado al sistema de diseño.
 
 ---
 
@@ -23,14 +23,14 @@ Firebase Storage tiene limitaciones en el plan gratuito. S3 con presigned URLs e
 
 ### Estructura de carpetas
 El proyecto sigue una arquitectura en capas con separación clara de responsabilidades:
-- `features/auth` — páginas de Login y Register
-- `features/products` — catálogo, componentes y panel admin
-- `features/cart` — carrito, checkout y órdenes
-- `contexts/` — estado global (AuthContext, CartContext + cartReducer)
+- `features/auth` — páginas de Login y Register rediseñadas con tarjetas de vidrio
+- `features/products` — catálogo interactivo, modal de vista rápida y panel admin moderno
+- `features/cart` — carrito con alertas de stock, checkout y gestión de órdenes coloreadas
+- `contexts/` — estado global (AuthContext, CartContext + cartReducer con seguridad de stock)
 - `hooks/` — lógica reutilizable (useAuth, useCart, useProducts, useDebounce)
 - `services/` — acceso a APIs externas (authService, productService, orderService, s3Service)
 - `routes/` — protección de rutas (UserGuard, AdminGuard)
-- `layouts/` — layouts diferenciados (ClientLayout, AdminLayout)
+- `layouts/` — layouts premium (ClientLayout con notificaciones centralizadas, AdminLayout)
 - `types/` — contratos de datos TypeScript
 - `tests/` — tests unitarios e integración
 - `api/` — Vercel Serverless Functions (upload a S3)
@@ -39,7 +39,7 @@ El proyecto sigue una arquitectura en capas con separación clara de responsabil
 
 ## 🚀 Tech Stack
 
-**Frontend:** React 18, TypeScript, Vite, TailwindCSS, React Router v6
+**Frontend:** React 18, TypeScript, Vite, TailwindCSS (con fuentes de Google y animaciones personalizadas), React Router v6
 
 **Backend/Servicios:** Firebase Authentication, Firebase Firestore, AWS S3, Vercel Serverless Functions
 
@@ -105,6 +105,7 @@ npm run dev
 | 5 | Implementación del debounce | Claude | "¿Cómo implemento debounce en el buscador para no filtrar en cada tecla?" | Creé el custom hook useDebounce que espera 400ms después de que el usuario deja de escribir |
 | 6 | Resolución de error de deploy en Vercel | Claude | "El build falla con: Cannot find name process. Do you need @types/node?" | Instalé @types/node y lo agregué al tsconfig para que TypeScript reconozca las variables de entorno de Node |
 | 7 | Tests de integración | Claude | "¿Cómo mockeo Firebase en Vitest para testear el componente Home sin llamadas reales?" | Aprendí a usar vi.mock para interceptar los módulos de Firebase y simular respuestas controladas |
+| 8 | Rediseño estético y correcciones de UX/UI | Antigravity (Gemini) | "Quiero mejorar cómo se ve el estilo de la app, el login y catálogo se ven feos, y arreglar que al agregar productos no notifique y permita agregar sin límites de stock." | Rediseñamos la aplicación completa con una estética oscura premium, glassmorphism, notificaciones Toasts centradas, modal de vista rápida y validación estricta de stock en reducer/context. |
 
 ---
 
@@ -125,4 +126,3 @@ npm run build    # Build de producción
 npm run test     # Correr tests con Vitest
 npm run preview  # Preview del build
 ```
-ENDOFFILE

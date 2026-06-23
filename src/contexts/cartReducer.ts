@@ -14,15 +14,23 @@ export function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case 'ADD_ITEM': {
       const exists = state.items.find(i => i.product.id === action.payload.id)
+      const maxStock = action.payload.stock ?? 0
       let newItems: CartItem[]
 
       if (exists) {
+        // Enforce stock limit
+        if (exists.quantity >= maxStock) {
+          return state
+        }
         newItems = state.items.map(i =>
           i.product.id === action.payload.id
             ? { ...i, quantity: i.quantity + 1 }
             : i
         )
       } else {
+        if (maxStock <= 0) {
+          return state
+        }
         newItems = [...state.items, { product: action.payload, quantity: 1 }]
       }
 
@@ -41,11 +49,14 @@ export function cartReducer(state: CartState, action: CartAction): CartState {
     }
 
     case 'UPDATE_QUANTITY': {
-      const newItems = state.items.map(i =>
-        i.product.id === action.payload.productId
-          ? { ...i, quantity: action.payload.quantity }
-          : i
-      )
+      const newItems = state.items.map(i => {
+        if (i.product.id === action.payload.productId) {
+          const maxStock = i.product.stock ?? 0
+          const validQuantity = Math.min(action.payload.quantity, maxStock)
+          return { ...i, quantity: validQuantity }
+        }
+        return i
+      })
       return {
         items: newItems,
         total: calculateTotal(newItems)

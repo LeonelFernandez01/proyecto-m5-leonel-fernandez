@@ -12,11 +12,11 @@ export function AdminRoute() {
     )
   }
 
-  // Si no está logueado o si está logueado pero NO es administrador, rebote masivo
+  
   if (!user || user.role !== 'admin') {
     return <Navigate to="/" replace />
   }
 
-  // Si es admin verificado por el servidor, pasa al panel de control
+  
   return <Outlet />
 }

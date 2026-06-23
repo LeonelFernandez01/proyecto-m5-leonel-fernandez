@@ -1,8 +1,8 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth' // 👈 Importamos desde su nueva carpeta hooks!
+import { useAuth } from '../hooks/useAuth' 
 
 export function ProtectedRoute() {
-  const { user, loading } = useAuth() // 👈 Sacamos el usuario y el loading limpios de acá
+  const { user, loading } = useAuth() 
 
   if (loading) {
     return (
@@ -13,7 +13,5 @@ export function ProtectedRoute() {
     )
   }
 
-  // Si el usuario existe y su rol en Firestore es 'admin', pasa al formulario (Outlet).
-  // Si no, lo saca zumbando de patitas a la calle al catálogo ("/")
   return user && user.role === 'admin' ? <Outlet /> : <Navigate to="/" replace />
 }

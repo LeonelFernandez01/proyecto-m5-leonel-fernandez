@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { db } from "../../../config/firebase"; // Ajustá si hace falta
 import { collection, getDocs, doc, updateDoc, query, orderBy } from "firebase/firestore";
 import Spinner from "../../../components/Spinner";
-// 👇 Importamos tu tipo real directamente desde tu index
 import type { Order } from "../../../types"; 
 
 export default function AdminOrders() {
@@ -19,7 +18,7 @@ export default function AdminOrders() {
       const ordersData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      })) as unknown as Order[]; // Lo casteamos a tu interfaz real
+      })) as unknown as Order[]; 
 
       setOrders(ordersData);
     } catch (error) {
@@ -65,7 +64,7 @@ export default function AdminOrders() {
       ) : (
         <div className="flex flex-col gap-4">
           {orders.map((order) => {
-            // Manejo seguro por si Firebase devuelve Timestamp
+            
             const orderDate = order.createdAt && typeof (order.createdAt as { toDate?: () => Date }).toDate === "function"
              ? (order.createdAt as { toDate: () => Date }).toDate()
              : new Date(order.createdAt as Date);

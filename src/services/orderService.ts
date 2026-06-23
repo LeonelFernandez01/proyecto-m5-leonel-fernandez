@@ -6,26 +6,24 @@ import {
   doc,
   updateDoc,
   orderBy,
-  runTransaction, // 👈 Sumamos el motor de transacciones de Firebase
+  runTransaction, 
 } from "firebase/firestore";
 import { db } from "../config/firebase";
 import type { Order, CartItem } from "../types";
 import type { DocumentReference } from 'firebase/firestore'
 
-// ============================================================================
-// 1. Crear una orden con descuento de stock automatizado (Transacción Atómica)
-// ============================================================================
+
 export async function createOrder(
   userId: string,
   items: CartItem[],
   total: number,
 ): Promise<string> {
   
-  // runTransaction asegura que si no hay stock de algún producto, no se cree la orden ni se reste nada
+  
   return await runTransaction(db, async (transaction) => {
     const productUpdates: { docRef: DocumentReference; newStock: number }[] = [];
 
-    // Paso A: Chequear el stock de cada producto en el carrito
+    
     for (const item of items) {
       const productRef = doc(db, "products", item.product.id);
       const productSnap = await transaction.get(productRef);
@@ -35,26 +33,26 @@ export async function createOrder(
       }
 
       const productData = productSnap.data();
-      const currentStock = productData.stock ?? 0; // Si no está definido el campo, asume 0
+      const currentStock = productData.stock ?? 0; 
 
-      // Si el cliente pide más de lo que hay, frena el proceso acá tirando un error
+      
       if (currentStock < item.quantity) {
         throw new Error(`Stock insuficiente para ${item.product.name}. Quedan ${currentStock} unidades.`);
       }
 
-      // Guardamos la info para actualizarla en el paso siguiente
+      
       productUpdates.push({
         docRef: productRef,
         newStock: currentStock - item.quantity,
       });
     }
 
-    // Paso B: Si todos tienen stock disponible, restamos las unidades correspondientes
+    
     for (const update of productUpdates) {
       transaction.update(update.docRef, { stock: update.newStock });
     }
 
-    // Paso C: Creamos el documento de la orden con su ID seguro de Firebase
+    
     const order = {
       userId,
       items,
@@ -64,16 +62,14 @@ export async function createOrder(
     };
     
     const ordersRef = collection(db, "orders");
-    const newOrderDocRef = doc(ordersRef); // Genera la referencia con un ID único autogenerado
+    const newOrderDocRef = doc(ordersRef); 
     transaction.set(newOrderDocRef, order);
 
-    return newOrderDocRef.id; // Devolvemos el ID al Checkout para el modal de éxito
+    return newOrderDocRef.id; 
   });
 }
 
-// ============================================================================
-// 2. Traer órdenes de un usuario específico (Historial Cliente)
-// ============================================================================
+
 export async function getOrdersByUser(userId: string): Promise<Order[]> {
   const q = query(
     collection(db, "orders"),
@@ -87,9 +83,7 @@ export async function getOrdersByUser(userId: string): Promise<Order[]> {
   })) as Order[];
 }
 
-// ============================================================================
-// 3. Traer todas las órdenes del sistema (Panel Admin)
-// ============================================================================
+
 export async function getAllOrders(): Promise<Order[]> {
   const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
   const snapshot = await getDocs(q);
@@ -99,9 +93,7 @@ export async function getAllOrders(): Promise<Order[]> {
   })) as Order[];
 }
 
-// ============================================================================
-// 4. Actualizar el estado de una orden (Panel Admin)
-// ============================================================================
+
 export async function updateOrderStatus(
   orderId: string,
   status: Order["status"],

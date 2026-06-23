@@ -1,7 +1,6 @@
 import { createContext, useEffect, useState } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
-// 🚨 Dejamos la ruta apuntando a config/ para el paso que sigue
 import { auth, db } from '../config/firebase' 
 import type { User } from '../types'
 
@@ -10,7 +9,7 @@ export interface AuthContextType {
   loading: boolean
 }
 
-// Lo exportamos para que el hook lo pueda consumir desde afuera
+
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true

@@ -9,7 +9,7 @@ const mockProduct: Product = {
   description: 'Remera ideal para entrenar',
   price: 15000,
   category: 'indumentaria',
-  imageUrl: 'remera.jpg', // 👈 Limpiada la "i" que estaba colgada acá
+  imageUrl: 'remera.jpg', 
   stock: 5,
   createdAt: new Date()
 }
@@ -17,7 +17,7 @@ const mockProduct: Product = {
 describe('Pruebas unitarias sobre cartReducer', () => {
 
   it('Debería agregar un producto nuevo al carrito (ADD_ITEM)', () => {
-    // 👈 Agregamos total: 0 para cumplir con CartState
+    
     const initialState: CartState = { items: [], total: 0 } 
     const action = { type: 'ADD_ITEM' as const, payload: mockProduct }
 
@@ -30,7 +30,7 @@ describe('Pruebas unitarias sobre cartReducer', () => {
   })
 
   it('Debería incrementar la cantidad si el producto ya existe en el carrito', () => {
-    // 👈 Agregamos total: 15000 reflejando el producto que ya está adentro
+    
     const initialState: CartState = { 
       items: [{ product: mockProduct, quantity: 1 }],
       total: 15000 
@@ -45,7 +45,7 @@ describe('Pruebas unitarias sobre cartReducer', () => {
   })
 
   it('Debería vaciar el carrito por completo (CLEAR_CART)', () => {
-    // 👈 Agregamos total: 45000 reflejando los 3 productos
+    
     const initialState: CartState = {
       items: [{ product: mockProduct, quantity: 3 }],
       total: 45000

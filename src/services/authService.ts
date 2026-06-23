@@ -9,7 +9,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import type { User } from "../types";
 
-// Registro con email y password
+
 export async function registerWithEmail(
   email: string,
   password: string,
@@ -34,13 +34,13 @@ export async function registerWithEmail(
   return newUser;
 }
 
-// Login con email y password
+
 export async function loginWithEmail(email: string, password: string) {
   const credential = await signInWithEmailAndPassword(auth, email, password);
   return credential.user;
 }
 
-// Login con Google
+
 export async function loginWithGoogle() {
   const provider = new GoogleAuthProvider();
   const credential = await signInWithPopup(auth, provider);
@@ -58,7 +58,7 @@ export async function loginWithGoogle() {
   return newUser;
 }
 
-// Logout
+
 export async function logout() {
   await signOut(auth);
 }

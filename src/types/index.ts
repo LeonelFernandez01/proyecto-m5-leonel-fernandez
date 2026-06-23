@@ -37,7 +37,7 @@ export interface Order {
 
 export interface CartState {
   items: CartItem[]
-  total: number // 👈 Sumamos el total acá para que el estado sea predecible
+  total: number 
 }
 
 export type CartAction =

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../../hooks/useAuth"; // 👈 Importamos desde su nueva carpeta hooks!
+import { useAuth } from "../../../hooks/useAuth"; 
 import {
   getOrdersByUser,
   getAllOrders,
@@ -16,10 +16,10 @@ const STATUS_LABELS: Record<Order["status"], string> = {
 };
 
 const STATUS_COLORS: Record<Order["status"], string> = {
-  pending: "bg-yellow-100 text-yellow-700",
-  processing: "bg-blue-100 text-blue-700",
-  completed: "bg-green-100 text-green-700",
-  cancelled: "bg-red-100 text-red-700",
+  pending: "bg-amber-500/10 text-amber-400 border border-amber-500/20",
+  processing: "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20",
+  completed: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
+  cancelled: "bg-rose-500/10 text-rose-450 border border-rose-500/20",
 };
 
 export default function Orders() {
@@ -27,7 +27,6 @@ export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Detectamos de forma segura si el usuario actual es Administrador
   const isAdmin = user?.role === "admin";
 
   useEffect(() => {
@@ -35,7 +34,6 @@ export default function Orders() {
       if (!user) return;
       try {
         setLoading(true);
-        // SI ES ADMIN: Trae absolutamente todo. SI ES CUSTOMER: Trae solo las suyas.
         const data = isAdmin
           ? await getAllOrders()
           : await getOrdersByUser(user.uid);
@@ -49,14 +47,12 @@ export default function Orders() {
     fetchOrders();
   }, [user, isAdmin]);
 
-  // Función que gatilla el Admin para cambiar el estado desde la UI
   const handleStatusChange = async (
     orderId: string,
     newStatus: Order["status"],
   ) => {
     try {
       await updateOrderStatus(orderId, newStatus);
-      // Actualizamos el estado local para que la UI cambie al toque sin recargar la página
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order.id === orderId ? { ...order, status: newStatus } : order,
@@ -69,60 +65,75 @@ export default function Orders() {
   };
 
   if (loading) {
-  return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <Spinner message="Cargando tus pedidos..." />
-    </div>
-  );
-}
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <Spinner message="Cargando tus pedidos..." />
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      {/* Título dinámico según quién mira la pantalla */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
-          {isAdmin ? "🛡️ Panel de Control: Órdenes Globales" : "Mis órdenes"}
-        </h1>
+    <div className="space-y-8 pb-12">
+      {/* Header section */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+          <h1 className="text-3xl font-extrabold text-white tracking-tight">
+            {isAdmin ? "Control de Órdenes Globales" : "Mis Órdenes"}
+          </h1>
+        </div>
         {isAdmin && (
-          <span className="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-            Modo Admin
+          <span className="bg-purple-500/10 border border-purple-500/30 text-purple-400 text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider">
+            Panel Administrador
           </span>
         )}
       </div>
 
       {orders.length === 0 ? (
-        <p className="text-gray-500">
-          No hay órdenes registradas en el sistema.
-        </p>
+        <div className="text-center py-20 bg-slate-900/20 rounded-2xl border border-slate-900/60">
+          <svg className="w-12 h-12 text-slate-600 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2" />
+          </svg>
+          <p className="text-slate-400 font-semibold">No hay órdenes registradas en el sistema.</p>
+        </div>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {orders.map((order) => (
             <div
               key={order.id}
-              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+              className="bg-slate-900/40 backdrop-blur-sm rounded-2xl border border-slate-800/80 p-6 shadow-md hover:border-slate-750 transition-all duration-200"
             >
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-                <div>
-                  <p className="text-xs text-gray-400 font-mono">
-                    ID: {order.id}
-                  </p>
+              {/* Order Info Row */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-5 pb-4 border-b border-slate-800/80">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">ID Pedido:</span>
+                    <span className="text-xs text-indigo-300 font-mono font-semibold">{order.id}</span>
+                  </div>
                   {isAdmin && (
-                    <p className="text-sm font-semibold text-purple-700">
-                      Cliente UID: {order.userId}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Cliente UID:</span>
+                      <span className="text-xs text-purple-400 font-mono font-semibold">{order.userId}</span>
+                    </div>
                   )}
-                  {/* 🛠️ FIJATE ACÁ: Le metimos la aserción de tipo para domar a TypeScript */}
-                  <p className="text-sm text-gray-500">
-                    {typeof (order.createdAt as { toDate?: () => Date }).toDate === 'function'
-                      ? (order.createdAt as { toDate: () => Date }).toDate().toLocaleDateString()
-                      : "Fecha no disponible"}
+                  <p className="text-xs text-slate-450 font-medium">
+                    Fecha:{" "}
+                    <span className="text-slate-350">
+                      {typeof (order.createdAt as { toDate?: () => Date }).toDate === 'function'
+                        ? (order.createdAt as { toDate: () => Date }).toDate().toLocaleDateString()
+                        : "Fecha no disponible"}
+                    </span>
                   </p>
                 </div>
 
-                {/* Si es Admin muestra el selector para cambiar estado. Si es cliente, solo texto plano. */}
+                {/* Status selector or badge */}
                 {isAdmin ? (
-                  <div className="flex items-center gap-2">
-                    <label className="text-xs font-bold text-gray-500 uppercase">
+                  <div className="flex items-center gap-2.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                       Estado:
                     </label>
                     <select
@@ -133,45 +144,47 @@ export default function Orders() {
                           e.target.value as Order["status"],
                         )
                       }
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border focus:outline-none focus:ring-2 focus:ring-purple-500 ${STATUS_COLORS[order.status]}`}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold border bg-slate-950 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer transition-all ${STATUS_COLORS[order.status]}`}
                     >
-                      <option value="pending">⏳ Pendiente</option>
-                      <option value="processing">🔄 En proceso</option>
-                      <option value="completed">✅ Completada</option>
-                      <option value="cancelled">❌ Cancelada</option>
+                      <option value="pending" className="bg-slate-900 text-amber-400">⏳ Pendiente</option>
+                      <option value="processing" className="bg-slate-900 text-indigo-400">🔄 En proceso</option>
+                      <option value="completed" className="bg-slate-900 text-emerald-400">✅ Completada</option>
+                      <option value="cancelled" className="bg-slate-900 text-rose-450">❌ Cancelada</option>
                     </select>
                   </div>
                 ) : (
                   <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${STATUS_COLORS[order.status]}`}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase ${STATUS_COLORS[order.status]}`}
                   >
                     {STATUS_LABELS[order.status]}
                   </span>
                 )}
               </div>
 
-              <div className="border-t border-gray-100 pt-4">
+              {/* Order Items */}
+              <div className="space-y-3 pl-1">
                 {order.items.map((item, index) => (
                   <div
                     key={index}
-                    className="flex justify-between text-sm py-1.5 border-b border-gray-50 border-dashed last:border-none"
+                    className="flex justify-between text-xs py-2 border-b border-slate-800/40 border-dashed last:border-none"
                   >
-                    <span className="text-gray-600">
+                    <span className="text-slate-350 font-medium">
                       {item.product.name}{" "}
-                      <strong className="text-gray-800">
+                      <strong className="text-indigo-450 ml-1.5">
                         x{item.quantity}
                       </strong>
                     </span>
-                    <span className="font-medium text-gray-700">
+                    <span className="font-bold text-slate-200">
                       ${item.product.price * item.quantity}
                     </span>
                   </div>
                 ))}
               </div>
 
-              <div className="border-t border-gray-100 mt-4 pt-4 flex justify-between font-bold text-lg text-gray-900">
-                <span>Total</span>
-                <span>${order.total}</span>
+              {/* Order Total */}
+              <div className="border-t border-slate-800/80 mt-5 pt-4 flex justify-between font-extrabold text-lg text-slate-100">
+                <span>Total abonado</span>
+                <span className="gradient-text">${order.total}</span>
               </div>
             </div>
           ))}

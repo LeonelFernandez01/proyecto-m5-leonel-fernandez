@@ -12,7 +12,7 @@ import {
 import { db } from "../config/firebase";
 import type { Product } from "../types";
 
-// Traer todos los productos
+
 export async function getProducts(): Promise<Product[]> {
   const snapshot = await getDocs(collection(db, "products"));
   return snapshot.docs.map((doc) => ({
@@ -21,7 +21,7 @@ export async function getProducts(): Promise<Product[]> {
   })) as Product[];
 }
 
-// Traer productos por categoría
+
 export async function getProductsByCategory(
   category: string,
 ): Promise<Product[]> {
@@ -36,7 +36,7 @@ export async function getProductsByCategory(
   })) as Product[];
 }
 
-// Traer un producto por id
+
 export async function getProductById(id: string): Promise<Product | null> {
   const docRef = doc(db, "products", id);
   const docSnap = await getDoc(docRef);
@@ -44,7 +44,7 @@ export async function getProductById(id: string): Promise<Product | null> {
   return { id: docSnap.id, ...docSnap.data() } as Product;
 }
 
-// Crear producto (admin)
+
 export async function createProduct(
   product: Omit<Product, "id">,
 ): Promise<string> {
@@ -52,7 +52,7 @@ export async function createProduct(
   return docRef.id;
 }
 
-// Actualizar producto (admin)
+
 export async function updateProduct(
   id: string,
   data: Partial<Product>,
@@ -60,7 +60,7 @@ export async function updateProduct(
   await updateDoc(doc(db, "products", id), data);
 }
 
-// Eliminar producto (admin)
+
 export async function deleteProduct(id: string): Promise<void> {
   await deleteDoc(doc(db, "products", id));
 }

@@ -1,6 +1,6 @@
 export async function uploadImageToS3(file: File): Promise<string> {
   try {
-    // 1. Le pedimos la URL firmada a nuestra función serverless de Vercel
+    
     const response = await fetch('/api/upload', {
       method: 'POST',
       headers: {
@@ -18,7 +18,7 @@ export async function uploadImageToS3(file: File): Promise<string> {
 
     const { uploadUrl, imageUrl } = await response.json();
 
-    // 2. Usamos esa URL firmada para subir el archivo físico directo a AWS S3
+   
     const uploadResult = await fetch(uploadUrl, {
       method: 'PUT',
       headers: {
@@ -31,9 +31,9 @@ export async function uploadImageToS3(file: File): Promise<string> {
       throw new Error('Error al subir el archivo físico a Amazon S3');
     }
 
-    // Retornamos la URL pública de AWS para guardarla en Firestore
+     
     return imageUrl;
- } catch (error) {
+   } catch (error) {
     console.error('Error en el proceso de subida a S3:', error);
     throw error;
   }

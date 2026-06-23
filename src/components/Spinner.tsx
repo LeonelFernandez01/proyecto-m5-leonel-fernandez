@@ -1,10 +1,13 @@
 export default function Spinner({ message = "Cargando..." }: { message?: string }) {
   return (
-    <div className="min-h-[50vh] w-full flex flex-col items-center justify-center gap-3">
-      {/* El circulito que gira */}
-      <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-      {/* El texto opcional */}
-      <p className="text-gray-500 font-medium text-sm tracking-wide">{message}</p>
+    <div className="w-full flex flex-col items-center justify-center gap-4 py-8">
+      {/* Premium glowing spinner */}
+      <div className="relative w-14 h-14">
+        <div className="absolute inset-0 rounded-full border-4 border-slate-800"></div>
+        <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-indigo-500 border-r-indigo-400 animate-spin shadow-indigo-500/20 shadow-md"></div>
+      </div>
+      
+      <p className="text-slate-400 font-semibold text-xs tracking-widest uppercase animate-pulse-soft">{message}</p>
     </div>
   );
 }
